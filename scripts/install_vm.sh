@@ -62,6 +62,6 @@ virt-install --name="${VM_NAME}" --vcpus="${VCPUS}" --memory="${RAM_MB}" \
 	--disk="size=${DISK_GB},backing_store=${IMAGE}" \
 	--network passt,portForward=${PORT}:22 \
 	--noautoconsole \
-	--boot loader=/usr/share/edk2/ovmf/OVMF_CODE.fd,loader.readonly=yes,loader.type=pflash,nvram.template=/usr/share/edk2/ovmf/OVMF_VARS.fd  \
+	--boot uefi,loader=/usr/share/edk2/ovmf/OVMF_CODE.fd,loader.readonly=yes,loader.type=pflash,nvram.template=/usr/share/edk2/ovmf/OVMF_VARS.fd  \
 	--tpm backend.type=emulator,backend.version=2.0,model=tpm-tis \
 	"${IGNITION_DEVICE_ARG[@]}"
