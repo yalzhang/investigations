@@ -6,3 +6,8 @@ Work in progress documents about Confidential Clusters.
 ```bash
 scripts/install_vm.sh  -b config.bu -k "$(cat coreos.key.pub)"
 ```
+
+## Remove fcos VM
+```bash
+scripts/uninstall_vm.sh  -n <vm_name>"
+```
