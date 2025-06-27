@@ -49,7 +49,7 @@ IGNITION_DEVICE_ARG=(--qemu-commandline="-fw_cfg name=opt/com.coreos/config,file
 
 chcon --verbose --type svirt_home_t ${IGNITION_CONFIG}
 
-if [ $force ]; then
+if [ "$force" = "true" ]; then
 	virsh destroy ${VM_NAME} || true
 	virsh undefine ${VM_NAME} --nvram --managed-save || true
 fi
