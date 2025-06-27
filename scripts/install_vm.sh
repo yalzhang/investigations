@@ -3,7 +3,6 @@
 STREAM="stable"
 IGNITION_FILE="config.ign"
 IGNITION_CONFIG="$(pwd)/${IGNITION_FILE}"
-IMAGE="${HOME}/.local/share/libvirt/images/fedora-coreos.qcow2"
 VM_NAME="fcos-kbs"
 VCPUS="2"
 RAM_MB="2048"
@@ -13,16 +12,19 @@ PORT="2222"
 set -xe 
 
 force=false
-while getopts "k:b:n:f p" opt; do
+while getopts "k:b:n:f p:s" opt; do
   case $opt in
 	k) key=$OPTARG ;;
 	b) butane=$OPTARG ;;
 	f) force=true ;;
 	n) VM_NAME=$OPTARG ;;
     p) PORT=$OPTARG ;;
+    s) STREAM=$OPTARG ;;
 	\?) echo "Invalid option"; exit 1 ;;
   esac
 done
+
+IMAGE="${HOME}/.local/share/libvirt/images/fedora-coreos-${STREAM}.qcow2"
 
 if [ -z "${key}" ]; then
 	echo "Please, specify the public ssh key"
