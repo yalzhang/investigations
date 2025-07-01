@@ -1,0 +1,20 @@
+[Unit]
+Description=Trustee Reference Values Provider Service
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+ContainerName=rvps
+Image=ghcr.io/confidential-containers/staged-images/rvps:latest
+Network=trustee.network
+Entrypoint=/usr/local/bin/rvps
+PublishPort=50003:50003
+Volume=reference-values:/opt/confidential-containers/attestation-service/reference_values
+Volume=/var/rvps/rvps.json:/etc/rvps.json:z
+Exec=--address 0.0.0.0:50003
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

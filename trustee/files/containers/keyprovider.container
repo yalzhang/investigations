@@ -1,0 +1,17 @@
+[Unit]
+Description=Trustee Key Provider
+Wants=network-online.target
+After=key-generation.container
+
+[Container]
+ContainerName=keyprovider
+Image=ghcr.io/confidential-containers/coco-keyprovider:latest
+Network=trustee.network
+Entrypoint=/usr/local/bin/coco_keyprovider
+PublishPort=50000:50000
+Volume=user-keys:/opt/confidential-containers/kbs/user-keys
+Exec=--socket 0.0.0.0:50000 --kbs http://kbs:8080 \
+     --auth-private-key /opt/confidential-containers/kbs/user-keys/private.key"
+
+[Install]
+WantedBy=default.target

@@ -49,7 +49,7 @@ sed "s|<KEY>|$key|g" $butane &>${bufile}
 podman run --interactive --rm --security-opt label=disable \
 	--volume "$(pwd)":/pwd -v "${bufile}":/config.bu:z --workdir /pwd quay.io/coreos/butane:release \
 	--pretty --strict /config.bu --output "/pwd/${IGNITION_FILE}" \
-	--files-dir files
+	--files-dir trustee
 
 IGNITION_DEVICE_ARG=(--qemu-commandline="-fw_cfg name=opt/com.coreos/config,file=${IGNITION_CONFIG}")
 

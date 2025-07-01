@@ -1,0 +1,18 @@
+[Unit]
+Description=Trustee KBS container
+
+[Container]
+ContainerName=kbs
+Image=ghcr.io/confidential-containers/staged-images/kbs-grpc-as:latest
+Network=trustee.network
+Entrypoint=/usr/local/bin/kbs
+PublishPort=8080:8080
+Volume=/var/kbs/config/kbs-config.toml:/opt/confidential-containers/kbs/config/kbs-config.toml:z
+Volume=kbs-storage:/opt/confidential-containers/kbs/repository
+Volume=nebula-ca:/opt/confidential-containers/kbs/nebula-ca
+Volume=user-keys:/opt/confidential-containers/kbs/user-keys
+Exec=--config-file \
+    /opt/confidential-containers/kbs/config/kbs-config.toml
+
+[Install]
+WantedBy=default.target

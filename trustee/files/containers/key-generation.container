@@ -1,0 +1,17 @@
+[Unit]
+Description=Trustee Key Generator
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+ContainerName=keyprovider
+Image=docker.io/alpine/openssl:latest
+Entrypoint=/bin/ash
+Volume=user-keys:/opt/confidential-containers/kbs/user-keys
+Exec=-c "if [ ! -s /opt/confidential-containers/kbs/user-keys/private.key ]; then \
+        /usr/bin/openssl genpkey -algorithm ed25519 > /opt/confidential-containers/kbs/user-keys/private.key && \
+        /usr/bin/openssl pkey -in /opt/confidential-containers/kbs/user-keys/private.key -pubout \
+            -out /opt/confidential-containers/kbs/user-keys/public.pub; else exit 0; fi;"
+
+[Install]
+WantedBy=default.target
