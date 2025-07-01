@@ -1,0 +1,19 @@
+[Unit]
+Description=Trustee GRPC Attestation Server
+Wants=network-online.target
+After=network-online.target
+Requires=rvps.container
+
+[Container]
+ContainerName=as
+Image=ghcr.io/confidential-containers/staged-images/coco-as-grpc:latest
+Network=trustee.network
+Entrypoint=/usr/local/bin/grpc-as
+PublishPort=50004:50004
+Volume=attestation-server-vol:/opt/confidential-containers/attestation-service
+Volume=/var/as/as-config.json:/etc/as-config.json:z
+Volume=/var/as/sgx_default_qcnl.conf:/etc/sgx_default_qcnl.conf:z
+Exec=--socket 0.0.0.0:50004 --config-file /etc/as-config.json
+
+[Install]
+WantedBy=default.target
