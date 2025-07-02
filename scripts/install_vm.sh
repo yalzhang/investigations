@@ -20,8 +20,8 @@ while getopts "k:b:n:f p:s" opt; do
 	b) butane=$OPTARG ;;
 	f) force=true ;;
 	n) VM_NAME=$OPTARG ;;
-    p) PORT=$OPTARG ;;
-    s) STREAM=$OPTARG ;;
+	p) PORT=$OPTARG ;;
+	s) STREAM=$OPTARG ;;
 	\?) echo "Invalid option"; exit 1 ;;
   esac
 done
