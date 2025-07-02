@@ -8,8 +8,8 @@ VCPUS="2"
 RAM_MB="2048"
 DISK_GB="10"
 PORT="2222"
-OVMF_CODE=${OVMF_CODE:-"/usr/share/edk2/ovmf/OVMF_CODE.fd"}
-OVMF_VARS_TEMPLATE=${OVMF_VARS_TEMPLATE:-"/usr/share/edk2/ovmf/OVMF_VARS.fd"}
+OVMF_CODE=${OVMF_CODE:-"/usr/share/edk2/ovmf/OVMF_CODE_4M.secboot.qcow2"}
+OVMF_VARS_TEMPLATE=${OVMF_VARS_TEMPLATE:-"/usr/share/edk2/ovmf/OVMF_VARS_4M.secboot.qcow2"}
 
 set -xe 
 
