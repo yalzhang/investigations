@@ -14,7 +14,7 @@ OVMF_VARS_TEMPLATE=${OVMF_VARS_TEMPLATE:-"/usr/share/edk2/ovmf/OVMF_VARS.fd"}
 set -xe 
 
 force=false
-while getopts "k:b:n:f p:s" opt; do
+while getopts "k:b:n:f p:s:" opt; do
   case $opt in
 	k) key=$OPTARG ;;
 	b) butane=$OPTARG ;;
