@@ -73,3 +73,7 @@ storage:
       mode: 0644
       contents:
         local: files/containers/trustee.network
+    - path: /etc/containers/systemd/kbs-client.container
+      mode: 0644
+      contents:
+        local: files/containers/kbc.container
