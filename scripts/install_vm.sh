@@ -8,20 +8,20 @@ VCPUS="2"
 RAM_MB="2048"
 DISK_GB="10"
 PORT="2222"
-OVMF_CODE=${OVMF_CODE:-"/usr/share/edk2/ovmf/OVMF_CODE.fd"}
-OVMF_VARS_TEMPLATE=${OVMF_VARS_TEMPLATE:-"/usr/share/edk2/ovmf/OVMF_VARS.fd"}
+OVMF_CODE=${OVMF_CODE:-"/usr/share/edk2/ovmf/OVMF_CODE_4M.secboot.qcow2"}
+OVMF_VARS_TEMPLATE=${OVMF_VARS_TEMPLATE:-"/usr/share/edk2/ovmf/OVMF_VARS_4M.secboot.qcow2"}
 
-set -xe 
+set -xe
 
 force=false
-while getopts "k:b:n:f p:s" opt; do
+while getopts "k:b:n:f p:s:" opt; do
   case $opt in
 	k) key=$OPTARG ;;
 	b) butane=$OPTARG ;;
 	f) force=true ;;
 	n) VM_NAME=$OPTARG ;;
-    p) PORT=$OPTARG ;;
-    s) STREAM=$OPTARG ;;
+	p) PORT=$OPTARG ;;
+	s) STREAM=$OPTARG ;;
 	\?) echo "Invalid option"; exit 1 ;;
   esac
 done
