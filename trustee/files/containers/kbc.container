@@ -1,0 +1,13 @@
+[Unit]
+Description=Trustee KBS client container
+After=key-generation.container
+
+[Container]
+ContainerName=kbs-client
+Image=ghcr.io/confidential-containers/staged-images/kbs-client-image
+Network=trustee.network
+Volume=user-keys:/opt/confidential-containers/kbs/user-keys
+Exec=tail -f /dev/null
+
+[Install]
+WantedBy=default.target

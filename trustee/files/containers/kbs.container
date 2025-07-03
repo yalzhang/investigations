@@ -1,5 +1,6 @@
 [Unit]
 Description=Trustee KBS container
+After=key-generation.container
 
 [Container]
 ContainerName=kbs
