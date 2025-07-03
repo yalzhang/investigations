@@ -2,6 +2,7 @@
 Description=Trustee GRPC Attestation Server
 Wants=network-online.target
 After=network-online.target
+After=rvps.container
 Requires=rvps.container
 
 [Container]
