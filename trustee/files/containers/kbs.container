@@ -4,10 +4,11 @@ After=key-generation.container
 
 [Container]
 ContainerName=kbs
-Image=ghcr.io/confidential-containers/staged-images/kbs-grpc-as:latest
+Image=quay.io/afrosi_rh/kbs-grpc-as:latest
 Network=trustee.network
 Entrypoint=/usr/local/bin/kbs
 PublishPort=8080:8080
+Environment=RUST_LOG=debug
 Volume=/var/kbs/config/kbs-config.toml:/opt/confidential-containers/kbs/config/kbs-config.toml:z
 Volume=kbs-storage:/opt/confidential-containers/kbs/repository
 Volume=nebula-ca:/opt/confidential-containers/kbs/nebula-ca

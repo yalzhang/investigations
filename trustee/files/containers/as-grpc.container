@@ -7,7 +7,7 @@ Requires=rvps.container
 
 [Container]
 ContainerName=as
-Image=ghcr.io/confidential-containers/staged-images/coco-as-grpc:latest
+Image=quay.io/afrosi_rh/coco-as-grpc:latest
 Network=trustee.network
 Entrypoint=/usr/local/bin/grpc-as
 PublishPort=50004:50004
