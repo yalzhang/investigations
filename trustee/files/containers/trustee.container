@@ -1,0 +1,23 @@
+# rawhide (f43) is needed for tdx and sgx libraries
+FROM fedora:rawhide AS builder
+
+# default is 'main' but can be e.g. COMMIT=v0.11.0 (with --build-arg COMMIT=v0.11.0)
+ARG COMMIT=main
+
+RUN dnf install -y perl clang make git \
+      tss2-devel tpm2-tss-devel \
+      protobuf-compiler cargo \
+      tdx-attest-devel sgx-devel \
+    && dnf clean all
+
+RUN cd /usr/src/ && \
+    git clone https://github.com/confidential-containers/trustee.git && \
+    cd trustee && git checkout ${COMMIT}
+
+RUN cd /usr/src/trustee/kbs && \
+    make build cli install-kbs install-cli
+
+FROM fedora:rawhide
+COPY --from=builder /usr/local/bin/kbs* /usr/local/bin/
+
+RUN dnf install -y tdx-attest-libs sgx-libs && dnf clean all

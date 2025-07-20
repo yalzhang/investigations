@@ -1,0 +1,20 @@
+FROM fedora:rawhide as builder
+
+# default is 'main' but can be e.g. COMMIT=v0.11.0 (with --build-arg COMMIT=v0.11.0)
+ARG COMMIT=main
+
+RUN dnf install -y git tss2-devel tpm2-tss-devel cargo openssl-devel perl
+
+RUN cd /usr/src/ && \
+    git clone https://github.com/confidential-containers/guest-components.git && \
+    cd guest-components && git checkout ${COMMIT}
+
+RUN cd /usr/src/guest-components && \
+    cargo build -p kbs_protocol --bin trustee-attester --features bin,openssl && \
+    install target/debug/trustee-attester /usr/local/bin/
+
+
+FROM fedora:rawhide
+
+COPY --from=builder /usr/local/bin/trustee-attester /usr/local/bin/
+
