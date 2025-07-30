@@ -1,0 +1,40 @@
+variant: fcos
+version: 1.4.0
+passwd:
+  users:
+    - name: core
+      password_hash: $y$j9T$olqEnUo0IDevlLKg.8TgK0$JWEVZm25FHA.LYdWgckIQuULOPhbMMk.wQJx3nXU9u6
+      ssh_authorized_keys:
+        - ssh-rsa EXAMPLE_SSH_KEY user@hostname
+storage:
+  luks:
+    - name: root
+      label: luks-root
+      device: /dev/disk/by-partlabel/root
+      clevis:
+        custom:
+          needs_network: false
+          pin: tpm2
+          config: '{"pcr_bank":"sha256","pcr_ids":"7"}'
+      wipe_volume: true
+  filesystems:
+    - device: /dev/mapper/root
+      format: xfs
+      wipe_filesystem: true
+      label: root
+  files:
+    - path: /var/supersecret
+      overwrite: true
+      contents:
+        inline: Schtroumpf!
+systemd:
+  units:
+    - name: serial-getty@ttyS0.service
+      dropins:
+      - name: autologin-core.conf
+        contents: |
+          [Service]
+          # Override Execstart in main unit
+          ExecStart=
+          # Add new Execstart with `-` prefix to ignore failure`
+          ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM
