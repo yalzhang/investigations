@@ -13,7 +13,7 @@ if [ -z "$KEY" ]; then
 	exit 1
 fi
 
-scripts/install_vm.sh  -n trustee  -b trustee/config.bu -k "$(cat $KEY)" -f  -p ${TRUSTEE_SSH_PORT} \
+scripts/install_vm.sh  -n trustee  -b configs/trustee.bu -k "$(cat $KEY)" -f  -p ${TRUSTEE_SSH_PORT} \
 	-i ${IMAGE} -d trustee -t ${TRUSTEE_PORT}
 
 until curl http://127.0.0.2:${TRUSTEE_PORT}; do
@@ -27,5 +27,5 @@ until ssh core@localhost -p ${TRUSTEE_SSH_PORT} -i "${KEY%.*}" \
 	sleep 1
 done
 
-scripts/install_vm.sh  -n vm  -b encrypt-disk/config.bu -k "$(cat $KEY)" -f  -p ${VM_SSH_PORT} \
+scripts/install_vm.sh  -n vm  -b configs/luks.bu -k "$(cat $KEY)" -f  -p ${VM_SSH_PORT} \
 	-i ${IMAGE}
