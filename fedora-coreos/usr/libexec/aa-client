@@ -3,8 +3,10 @@
 set -x
 
 # Configuration
-KBS_URL="http://10.72.140.122:31968"
-ROOT_DEVICE="/dev/vda4"
+KBS_IP=$(ip route | awk '/^default/ {print $3}')
+KBS_PORT="8080"
+KBS_URL="http://${KBS_IP}:${KBS_PORT}"
+ROOT_DEVICE=/dev/$(dmsetup info --noheadings -c -o blkdevs_used "$(blkid -L root)")
 CRYPT_ROOT_NAME="luks-root"
 BOOT_DEVICE="/dev/disk/by-label/boot"
 BOOT_MOUNT="/mnt/boot_partition"
@@ -26,13 +28,13 @@ cleanup() {
     if [ -n "${passphrase}" ]; then
         passphrase="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     fi
-    
+
     # umount the mountpoint
     umount "${BOOT_MOUNT}" 2>/dev/null || true
-    
+
     # Delete the temp files or directories
     rm -rf "${TEMP_DIR}"
-    
+
     info "*** ATTESTATION SERVICE COMPLETED ***"
 }
 trap cleanup EXIT
@@ -45,27 +47,27 @@ fetch_passphrase() {
 
     while [ $count -lt $attempts ] && [ -z "$result" ]; do
         info "Attempt $((count+1)): Fetching passphrase from ${KBS_URL}"
-	
+
         if ! result=$(/usr/bin/trustee-attester --url "${KBS_URL}" get-resource --path default/rootdecrypt/key1 2>/dev/null); then
-	    status=$?
-	    info "Attestation failed with status $status"
+        status=$?
+        info "Attestation failed with status $status"
             sleep $RETRY_DELAY
-	elif [ -n "$result" ]; then
+        elif [ -n "$result" ]; then
             info "Successfully retrieved passphrase"
             break
         else
             info "Empty response received"
             sleep $RETRY_DELAY
         fi
-        
+
         count=$((count+1))
     done
-    
+
     if [ -z "$result" ]; then
         info "Failed to retrieve passphrase after $attempts attempts"
         return 1
     fi
-    
+
     echo "$result"
     return 0
 }
@@ -82,7 +84,7 @@ replace_luks_key() {
     pt="xxxxxxxxxx"  # Erase the passphrase from memory
 
     if ! /usr/sbin/cryptsetup --verbose open --test-passphrase "${device}" --key-file="${OLD_PASS_FILE}"; then
-        info "Failed to verify old key" 
+        info "Failed to verify old key"
         return 1
     fi
 
@@ -137,13 +139,13 @@ if $BOOT_MOUNTED && [ -f "${MARKER_FILE}" ]; then
         info "ATTESTATION SERVICE: Successfully decrypted root filesystem"
     else
         info "ATTESTATION SERVICE: Failed to decrypt root filesystem"
-    	exit 1
+        exit 1
     fi
 else
     info "First boot: Replacing LUKS key"
     replace_luks_key "${ROOT_DEVICE}" "${PASSPHRASE_FILE}" || exit 1
 
-    # Prevent the system from calling systemd-cryptsetup@root.service 
+    # Prevent the system from calling systemd-cryptsetup@root.service
     # to decrypt LUKS devices during other-boots.
     if [ -f "${CRYPTTAB_FILE}" ]; then
         info "Clearing crypttab file"

@@ -1,5 +1,5 @@
 [Unit]
-Description=Confidential Containers Attestaion Agent Simple Client
+Description=Confidential Containers Attestation Agent Client
 Before=cryptsetup.target
 Before=initrd-switch-root.target
 Before=ignition-complete.target
@@ -11,7 +11,8 @@ Wants=network-online.target
 Requires=dev-disk-by\x2dlabel-boot.device
 
 [Service]
-SyslogLevel=debug
 Type=oneshot
-ExecStart=/usr/bin/aa-client-service.sh
-MountFlags=slave
+ExecStart=/usr/libexec/aa-client
+# Should not be needed
+# SyslogLevel=debug
+# MountFlags=slave
