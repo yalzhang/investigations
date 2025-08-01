@@ -6,7 +6,7 @@ set -x
 KBS_IP=$(ip route | awk '/^default/ {print $3}')
 KBS_PORT="8080"
 KBS_URL="http://${KBS_IP}:${KBS_PORT}"
-ROOT_DEVICE=$(blkid -L root)
+ROOT_DEVICE=/dev/$(dmsetup info --noheadings -c -o blkdevs_used "$(blkid -L root)")
 CRYPT_ROOT_NAME="luks-root"
 BOOT_DEVICE="/dev/disk/by-label/boot"
 BOOT_MOUNT="/mnt/boot_partition"
