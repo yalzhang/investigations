@@ -14,7 +14,7 @@ if [ -z "$KEY" ]; then
 fi
 
 scripts/install_vm.sh  -n trustee  -b configs/trustee.bu -k "$(cat $KEY)" -f  -p ${TRUSTEE_SSH_PORT} \
-	-i ${IMAGE} -d trustee -t ${TRUSTEE_PORT}
+	-i ${IMAGE} -t ${TRUSTEE_PORT}
 
 until curl http://127.0.0.2:${TRUSTEE_PORT}; do
   echo "Waiting for KBS to be available..."

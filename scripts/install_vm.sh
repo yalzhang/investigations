@@ -1,8 +1,6 @@
 #!/bin/bash
 
 STREAM="stable"
-IGNITION_FILE="config.ign"
-IGNITION_CONFIG="$(pwd)/${IGNITION_FILE}"
 VM_NAME="fcos-kbs"
 VCPUS="2"
 RAM_MB="5210"
@@ -21,7 +19,6 @@ dir=trustee
 while getopts "k:b:n:f p:s:d:t:i:" opt; do
   case $opt in
 	k) key=$OPTARG ;;
-	d) dir=$OPTARG ;;
 	b) butane=$OPTARG ;;
 	f) force=true ;;
 	n) VM_NAME=$OPTARG ;;
@@ -48,13 +45,24 @@ if [ ! -e  "${IMAGE}" ] ; then
 		quay.io/coreos/coreos-installer:release download -s $STREAM -p qemu -f qcow2.xz --decompress)
 	mv "${HOME}/.local/share/libvirt/images/$image" $IMAGE
 fi
-bufile=$(mktemp)
-sed "s|<KEY>|$key|g" $butane &>${bufile}
 
+mkdir -p tmp
+butane_name="$(basename ${butane})"
+IGNITION_FILE="tmp/${butane_name%.bu}.ign"
+IGNITION_CONFIG="$(pwd)/${IGNITION_FILE}"
+bufile="./tmp/${butane_name}"
+sed "s|<KEY>|$key|g" $butane > ${bufile}
+butane_args=()
+if [[ -d ${butane%.bu} ]]; then
+	butane_args=("--files-dir" "${butane%.bu}")
+fi
 podman run --interactive --rm --security-opt label=disable \
-	--volume "$(pwd)":/pwd -v "${bufile}":/config.bu:z --workdir /pwd quay.io/coreos/butane:release \
+	--volume "$(pwd)":/pwd \
+	--volume "${bufile}":/config.bu:z \
+	--workdir /pwd \
+	quay.io/coreos/butane:release \
 	--pretty --strict /config.bu --output "/pwd/${IGNITION_FILE}" \
-	--files-dir ${dir}
+	"${butane_args[@]}"
 
 IGNITION_DEVICE_ARG=(--qemu-commandline="-fw_cfg name=opt/com.coreos/config,file=${IGNITION_CONFIG}")
 
