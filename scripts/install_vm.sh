@@ -10,9 +10,8 @@ OVMF_CODE=${OVMF_CODE:-"/usr/share/edk2/ovmf/OVMF_CODE_4M.secboot.qcow2"}
 OVMF_VARS_TEMPLATE=${OVMF_VARS_TEMPLATE:-"/usr/share/edk2/ovmf/OVMF_VARS_4M.secboot.qcow2"}
 TRUSTEE_PORT=""
 
-set -xe
-
-IMAGE="${HOME}/.local/share/libvirt/images/fedora-coreos-${STREAM}.qcow2"
+set -euo pipefail
+# set -x
 
 force=false
 dir=trustee
@@ -23,9 +22,8 @@ while getopts "k:b:n:f p:s:d:t:i:" opt; do
 	f) force=true ;;
 	n) VM_NAME=$OPTARG ;;
 	p) PORT=$OPTARG ;;
-	s) STREAM=$OPTARG ;;
 	t) TRUSTEE_PORT=$OPTARG ;;
-	i) IMAGE=$OPTARG ;;
+	i) image=$OPTARG ;;
 	\?) echo "Invalid option"; exit 1 ;;
   esac
 done
@@ -38,13 +36,11 @@ if [ -z "${butane}" ]; then
 	echo "Please, specify the butane configuration file"
 	exit 1
 fi
-
-
-if [ ! -e  "${IMAGE}" ] ; then
-	image=$(podman run --pull=newer --rm -v "${HOME}/.local/share/libvirt/images/":/data -w /data \
-		quay.io/coreos/coreos-installer:release download -s $STREAM -p qemu -f qcow2.xz --decompress)
-	mv "${HOME}/.local/share/libvirt/images/$image" $IMAGE
+if [ -z "${image}" ]; then
+	echo "Please, specify the image to use"
+	exit 1
 fi
+
 
 mkdir -p tmp
 butane_name="$(basename ${butane})"
@@ -76,9 +72,10 @@ args=""
 if [ ! -z "$TRUSTEE_PORT" ]; then
 	args=",portForward1.range.start=${TRUSTEE_PORT},portForward1.range.to=8080,portForward1.proto=tcp"
 fi
+
 virt-install --name="${VM_NAME}" --vcpus="${VCPUS}" --memory="${RAM_MB}" \
 	--os-variant="fedora-coreos-$STREAM" --import --graphics=none \
-	--disk="size=${DISK_GB},backing_store=${IMAGE}" \
+	--disk="size=${DISK_GB},backing_store=${image}" \
 	--network backend.type=passt,portForward0.range.start=${PORT},portForward0.range.to=22,portForward0.proto=tcp${args} \
 	--noautoconsole \
 	--boot uefi,loader=${OVMF_CODE},loader.readonly=yes,loader.type=pflash,nvram.template=${OVMF_VARS_TEMPLATE} \
