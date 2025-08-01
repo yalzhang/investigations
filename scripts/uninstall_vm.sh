@@ -14,5 +14,5 @@ if [ -z "${vm_name}" ]; then
 	exit 1
 fi
 
-virsh destroy ${vm_name}
+virsh destroy ${vm_name} || true
 virsh undefine ${vm_name} --nvram --managed-save
