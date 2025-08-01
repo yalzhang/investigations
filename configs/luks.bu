@@ -7,9 +7,29 @@ passwd:
       ssh_authorized_keys:
       - <KEY>
 
-boot_device:
+storage:
   luks:
-    tpm2: true
+    - name: root
+      label: luks-root
+      device: /dev/disk/by-partlabel/root
+      clevis:
+        custom:
+          needs_network: false
+          pin: tpm2
+          config: '{"pcr_bank":"sha256","pcr_ids":"7"}'
+      wipe_volume: true
+  filesystems:
+    - device: /dev/mapper/root
+      format: xfs
+      wipe_filesystem: true
+      label: root
+  files:
+    - path: /etc/profile.d/systemd-pager.sh
+      mode: 0644
+      contents:
+        inline: |
+          # Tell systemd to not use a pager when printing information
+          export SYSTEMD_PAGER=cat
 
 systemd:
   units:
@@ -22,12 +42,3 @@ systemd:
           ExecStart=
           # Add new Execstart with `-` prefix to ignore failure`
           ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM
-
-storage:
-  files:
-    - path: /etc/profile.d/systemd-pager.sh
-      mode: 0644
-      contents:
-        inline: |
-          # Tell systemd to not use a pager when printing information
-          export SYSTEMD_PAGER=cat
