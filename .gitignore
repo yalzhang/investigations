@@ -1,4 +1,5 @@
 cache/
-config.ign
 coreos.key*
 fcos-cvm.tar*
+*.ign
+*.ociarchive

@@ -1,11 +1,12 @@
 variant: fcos
-version: 1.4.0
+version: 1.6.0
+
 passwd:
   users:
     - name: core
-      password_hash: $y$j9T$olqEnUo0IDevlLKg.8TgK0$JWEVZm25FHA.LYdWgckIQuULOPhbMMk.wQJx3nXU9u6
       ssh_authorized_keys:
-        - ssh-rsa EXAMPLE_SSH_KEY user@hostname
+      - <KEY>
+
 storage:
   luks:
     - name: root
@@ -23,10 +24,13 @@ storage:
       wipe_filesystem: true
       label: root
   files:
-    - path: /var/supersecret
-      overwrite: true
+    - path: /etc/profile.d/systemd-pager.sh
+      mode: 0644
       contents:
-        inline: Schtroumpf!
+        inline: |
+          # Tell systemd to not use a pager when printing information
+          export SYSTEMD_PAGER=cat
+
 systemd:
   units:
     - name: serial-getty@ttyS0.service

@@ -1,0 +1,18 @@
+FROM quay.io/afrosi_rh/kbs-client-image:latest as kbc
+FROM quay.io/fedora/fedora-coreos:42.20250705.3.0
+
+COPY usr /usr
+COPY --from=kbc /usr/local/bin/kbs-client /usr/bin/trustee-attester
+
+RUN set -xeuo pipefail && \
+    KERNEL_VERSION="$(basename $(ls -d /lib/modules/*))" && \
+    raw_args="$(lsinitrd /lib/modules/${KERNEL_VERSION}/initramfs.img | grep '^Arguments: ' | sed 's/^Arguments: //')" && \
+    stock_arguments=$(echo "$raw_args" | sed "s/'//g") && \
+    echo "Using kernel: $KERNEL_VERSION" && \
+    echo "Dracut arguments: $stock_arguments" && \
+    mkdir -p /tmp/dracut /var/roothome && \
+    dracut $stock_arguments && \
+    mv -v /boot/initramfs*.img "/lib/modules/${KERNEL_VERSION}/initramfs.img" && \
+    ostree container commit
+
+LABEL com.coreos.osname="fedora-coreos"

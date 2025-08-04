@@ -66,9 +66,3 @@ drwxr-xr-x   2 root     root            0 Nov 28 11:55 usr/lib/modules/5.14.0-55
   - Check if SEV attestation is working properly
   - Ensure all required binaries are present in initrd
   - Verify LUKS configuration
-
-
-
-
-
-
