@@ -41,3 +41,13 @@ The script `create_vms.sh`:
 ```bash
 scripts/create-vms.sh coreos.key.pub 
 ```
+
+### Example with the Confidential Clusters operator and a local VM
+
+If you have deployed Confidential Clusters with Trustee, and its KBS is available at port `8080`, and the VM PCR values are configured with Trustee, you can instead run
+
+```bash
+EXISTING_TRUSTEE=yes scripts/create-vms.sh coreos.key.pub
+```
+
+to skip the creation of the former VM.
