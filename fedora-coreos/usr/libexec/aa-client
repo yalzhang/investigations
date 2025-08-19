@@ -11,6 +11,7 @@ CRYPT_ROOT_NAME="luks-root"
 BOOT_DEVICE="/dev/disk/by-label/boot"
 BOOT_MOUNT="/mnt/boot_partition"
 MARKER_FILE="${BOOT_MOUNT}/.trustee_done"
+ROOT_UUID_FILE="${BOOT_MOUNT}/.root_uuid"
 CRYPTTAB_FILE="/sysroot/etc/crypttab"
 MAX_RETRY_ATTEMPTS=3
 RETRY_DELAY=5
@@ -135,6 +136,9 @@ fi
 if $BOOT_MOUNTED && [ -f "${MARKER_FILE}" ]; then
     info "Normal boot: Decrypting root filesystem"
     info "ATTESTATION SERVICE: Decrypting root filesystem with fetched key"
+    ROOT_UUID=$(cat "${ROOT_UUID_FILE}")
+    ROOT_DEVICE="/dev/disk/by-uuid/${ROOT_UUID}"
+    info "Normal boot: Root device resolved as ${ROOT_DEVICE}"
     if /usr/sbin/cryptsetup --verbose open ${ROOT_DEVICE} ${CRYPT_ROOT_NAME} --key-file=${PASSPHRASE_FILE}; then
         info "ATTESTATION SERVICE: Successfully decrypted root filesystem"
     else
@@ -143,7 +147,10 @@ if $BOOT_MOUNTED && [ -f "${MARKER_FILE}" ]; then
     fi
 else
     info "First boot: Replacing LUKS key"
+    info "First boot: Root device resolved as ${ROOT_DEVICE}"
     replace_luks_key "${ROOT_DEVICE}" "${PASSPHRASE_FILE}" || exit 1
+    ROOT_UUID=$(blkid -s UUID -o value "${ROOT_DEVICE}")
+    echo "$ROOT_UUID" > "${ROOT_UUID_FILE}"
 
     # Prevent the system from calling systemd-cryptsetup@root.service
     # to decrypt LUKS devices during other-boots.
