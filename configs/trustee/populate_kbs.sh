@@ -3,7 +3,7 @@
 set -xe
 
 KBS=kbs:8080
-SECRET_PATH=${SECRET_PATH:=default/rootdecrypt/key1}
+SECRET_PATH=${SECRET_PATH:=default/machine/root}
 KEY=${KEY:=/opt/confidential-containers/kbs/user-keys/private.key}
 
 podman exec -ti kbs-client \

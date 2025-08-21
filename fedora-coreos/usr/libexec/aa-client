@@ -48,7 +48,7 @@ fetch_passphrase() {
     while [ $count -lt $attempts ] && [ -z "$result" ]; do
         info "Attempt $((count+1)): Fetching passphrase from ${KBS_URL}"
 
-        if ! result=$(/usr/bin/trustee-attester --url "${KBS_URL}" get-resource --path default/rootdecrypt/key1 2>/dev/null); then
+        if ! result=$(/usr/bin/trustee-attester --url "${KBS_URL}" get-resource --path default/machine/root 2>/dev/null); then
         status=$?
         info "Attestation failed with status $status"
             sleep $RETRY_DELAY
