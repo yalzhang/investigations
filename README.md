@@ -18,9 +18,13 @@ Currently, ignition does not support encrypting the disk using trustee (see this
 [RFC](https://github.com/coreos/ignition/issues/2099) for more details). Therefore, we need to build a custom initramfs
 which contains the trustee attester, and the KBS information hardcoded in the setup script.
 
-Build the Fedora Coreos image with the custom initrd:
+Build the Fedora CoreOS or Centos Stream CoreOS image with the custom initrd:
 ```bash
-scripts/build-fcos-image.sh
+cd coreos
+# Centos Stream CoreOS image
+just os=scos build oci-archive osbuild-qemu
+# Fedora CoreOS image
+just build oci-archive osbuild-qemu
 ```
 
 In this example, we use 2 VMs, the first for running the trustee server while the second VM has been attested and its

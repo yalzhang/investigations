@@ -1,0 +1,10 @@
+[Unit]
+Description=Confidential Containers Attestation Agent Client
+Before=aa-client.service
+After=network-online.target
+After=ignition-files.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/register-node

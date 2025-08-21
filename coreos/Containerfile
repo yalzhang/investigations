@@ -1,7 +1,9 @@
+ARG BASE
+ARG LABEL
 FROM quay.io/afrosi_rh/kbs-client-image:latest as kbc
-FROM quay.io/fedora/fedora-coreos:42.20250705.3.0
+FROM $BASE
 
-COPY usr /usr
+COPY ./usr /usr
 COPY --from=kbc /usr/local/bin/kbs-client /usr/bin/trustee-attester
 
 RUN set -xeuo pipefail && \
@@ -15,4 +17,4 @@ RUN set -xeuo pipefail && \
     mv -v /boot/initramfs*.img "/lib/modules/${KERNEL_VERSION}/initramfs.img" && \
     ostree container commit
 
-LABEL com.coreos.osname="fedora-coreos"
+LABEL com.coreos.osname=$LABEL
