@@ -1,11 +1,32 @@
-name: Build and Push Trustee Attester Image
+name: "Build and Push Trustee Attester Image"
+
+env:
+  NAME: "trustee-attester"
+  REGISTRY: "quay.io/yalzhang"
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
     paths:
       - 'configs/trustee/containers/trustee-attester.container'
+      - '.github/workflows/build-trustee-attester.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'configs/trustee/containers/trustee-attester.container'
+      - '.github/workflows/build-trustee-attester.yml'
   workflow_dispatch:
+
+permissions: read-all
+
+# Prevent multiple workflow runs from racing to ensure that pushes are made
+# sequentialy for the main branch. Also cancel in progress workflow runs for
+# pull requests only.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build-trustee-attester:
@@ -14,27 +35,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Login to Quay.io
-        uses: redhat-actions/podman-login@v1
-        with:
-          username: ${{ secrets.QUAY_USER }}
-          password: ${{ secrets.QUAY_PASSWORD }}
-          registry: quay.io
-
       - name: Build trustee-attester image
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: trustee-attester
+          image: ${{ env.NAME }}
           tags: latest ${{ github.sha }}
           containerfiles: |
-            ./configs/trustee/containers/trustee-attester.container
-          context: .
+            configs/trustee/containers/trustee-attester.container
+          context: configs/trustee/containers
           oci: true
 
-      - name: Push to Quay.io
+      - name: Push to Container Registry
         uses: redhat-actions/push-to-registry@v2
+        # if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         with:
           image: ${{ steps.build-image.outputs.image }}
           tags: ${{ steps.build-image.outputs.tags }}
-          registry: quay.io/yalzhang
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.QUAY_USER }}
+          password: ${{ secrets.QUAY_PASSWORD }}
