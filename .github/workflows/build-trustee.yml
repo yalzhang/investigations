@@ -1,0 +1,40 @@
+name: Build and Push Trustee Image
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'configs/trustee/containers/trustee.container'
+  workflow_dispatch:
+
+jobs:
+  build-trustee:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to Quay.io
+        uses: redhat-actions/podman-login@v1
+        with:
+          username: ${{ secrets.QUAY_USER }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+          registry: quay.io
+
+      - name: Build trustee image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: trustee
+          tags: latest ${{ github.sha }}
+          containerfiles: |
+            ./configs/trustee/containers/trustee.container
+          context: .
+          oci: true
+
+      - name: Push to Quay.io
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: quay.io/yalzhang
