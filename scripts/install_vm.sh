@@ -57,7 +57,7 @@ podman run --interactive --rm --security-opt label=disable \
 	--volume "$(pwd)":/pwd \
 	--volume "${bufile}":/config.bu:z \
 	--workdir /pwd \
-	quay.io/coreos/butane:release \
+	quay.io/confidential-clusters/butane:clevis-pin-trustee \
 	--pretty --strict /config.bu --output "/pwd/${IGNITION_FILE}" \
 	"${butane_args[@]}"
 
