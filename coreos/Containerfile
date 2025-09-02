@@ -1,10 +1,13 @@
 ARG BASE
 ARG LABEL
 FROM quay.io/afrosi_rh/kbs-client-image:latest as kbc
+FROM quay.io/confidential-clusters/clevis-pin-trustee as clevis
 FROM $BASE
 
-COPY ./usr /usr
 COPY --from=kbc /usr/local/bin/kbs-client /usr/bin/trustee-attester
+COPY --from=clevis /usr/bin/clevis-pin-trustee /usr/bin/clevis-pin-trustee
+COPY --from=clevis /usr/bin/clevis-encrypt-trustee /usr/bin/clevis-encrypt-trustee
+COPY --from=clevis /usr/bin/clevis-decrypt-trustee /usr/bin/clevis-decrypt-trustee
 
 RUN set -xeuo pipefail && \
     KERNEL_VERSION="$(basename $(ls -d /lib/modules/*))" && \
