@@ -9,13 +9,14 @@ PORT="2222"
 OVMF_CODE=${OVMF_CODE:-"/usr/share/edk2/ovmf/OVMF_CODE_4M.secboot.qcow2"}
 OVMF_VARS_TEMPLATE=${OVMF_VARS_TEMPLATE:-"/usr/share/edk2/ovmf/OVMF_VARS_4M.secboot.qcow2"}
 TRUSTEE_PORT=""
+key=""
 
 set -euo pipefail
 # set -x
 
 force=false
 dir=trustee
-while getopts "k:b:n:f p:s:d:t:i:" opt; do
+while getopts "k:b:n:fp:s:d:t:i:" opt; do
   case $opt in
 	k) key=$OPTARG ;;
 	b) butane=$OPTARG ;;
