@@ -1,0 +1,57 @@
+name: "Build and push trustee-attester container image"
+
+env:
+  NAME: "trustee-attester"
+  REGISTRY: "quay.io/confidential-clusters"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'configs/trustee/containers/trustee-attester.container'
+      - '.github/workflows/build-trustee-attester-image.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'configs/trustee/containers/trustee-attester.container'
+      - '.github/workflows/build-trustee-attester-image.yml'
+  workflow_dispatch:
+
+permissions: read-all
+
+# Prevent multiple workflow runs from racing to ensure that pushes are made
+# sequentially for the main branch. Also cancel in progress workflow runs for
+# pull requests only.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build-trustee-attester-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build trustee-attester image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.NAME }}
+          tags: latest
+          containerfiles: |
+            configs/trustee/containers/trustee-attester.container
+          context: configs/trustee/containers
+          oci: true
+
+      - name: Push to Container Registry
+        uses: redhat-actions/push-to-registry@v2
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' && github.repository_owner == 'confidential-clusters'
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
