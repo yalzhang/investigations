@@ -1,0 +1,21 @@
+#!/bin/bash
+set -euo pipefail
+
+IP=$(ip route | awk '/^default/ {print $3}')
+PORT="3030"
+
+# Partition label and mount point
+PART_LABEL="IDSTORE"
+MOUNT_POINT="/mnt/idstore"
+ID_FILE="$MOUNT_POINT/id"
+
+PART_DEVICE=$(blkid -L "$PART_LABEL") || { echo "Partition $PART_LABEL not found"; exit 1; }
+
+mkdir -p "$MOUNT_POINT"
+mount -o rw "$PART_DEVICE" "$MOUNT_POINT"
+
+JSON=$(curl -fsSL http://${IP}):${PORT}/register || { echo "Failed to node metadata"; exit 2; }
+ID=$(echo "$JSON" | jq -r '.id') || { echo "Failed to parse JSON"; exit 3; }
+
+echo "$ID" > "$ID_FILE"
+chmod 600 "$ID_FILE"
