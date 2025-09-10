@@ -65,6 +65,17 @@ IGNITION_DEVICE_ARG=(--qemu-commandline="-fw_cfg name=opt/com.coreos/config,file
 
 chcon --verbose --type svirt_home_t ${IGNITION_CONFIG}
 
+# Serve remote ignition config
+bufile=pin-trustee.bu
+podman run --interactive --rm --security-opt label=disable \
+	--volume $(pwd)/configs/remote-ign:/pwd \
+	--workdir /pwd \
+	quay.io/confidential-clusters/butane:clevis-pin-trustee \
+	--pretty --strict /pwd/$bufile --output "/pwd/pin-trustee.ign"
+if [ -z "$(lsof -ti :8000)" ]; then
+	cd configs/remote-ign && python3 -m http.server 8000 &
+fi
+
 if [ "$force" = "true" ]; then
 	virsh destroy ${VM_NAME} || true
 	virsh undefine ${VM_NAME} --nvram --managed-save || true

@@ -1,0 +1,13 @@
+variant: fcos
+version: 1.6.0
+storage:
+  luks:
+    - name: root
+      label: luks-root
+      device: /dev/disk/by-partlabel/root
+      clevis:
+        custom:
+          needs_network: true
+          pin: trustee
+          config: '{"servers":[{"url":"http://192.168.50.1:8080","cert":""}],"path":"conf-cluster/12345/root"}'
+      wipe_volume: true

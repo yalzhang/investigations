@@ -6,18 +6,11 @@ passwd:
     - name: core
       ssh_authorized_keys:
       - <KEY>
-
+ignition:
+  config:
+    merge:
+      - source: http://192.168.50.1:8000/pin-trustee.ign
 storage:
-  luks:
-    - name: root
-      label: luks-root
-      device: /dev/disk/by-partlabel/root
-      clevis:
-        custom:
-          needs_network: true
-          pin: trustee
-          config: '{"servers":[{"url":"http://192.168.179.1:8080","cert":""}],"path":"conf-cluster/12345/root"}'
-      wipe_volume: true
   filesystems:
     - device: /dev/mapper/root
       format: xfs
