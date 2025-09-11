@@ -3,19 +3,19 @@ name: "Build and push fedora-coreos container image with customized initrd"
 env:
   NAME: "fedora-coreos"
   REGISTRY: "quay.io/confidential-clusters"
-
+  FCOS_IMG: "quay.io/fedora/fedora-coreos:42.20250705.3.0"
 on:
   push:
     branches:
       - main
     paths:
-      - 'fedora-coreos/**'
+      - 'coreos/**'
       - '.github/workflows/build-fcos-image.yml'
   pull_request:
     branches:
       - main
     paths:
-      - 'fedora-coreos/**'
+      - 'coreos/**'
       - '.github/workflows/build-fcos-image.yml'
   workflow_dispatch:
 
@@ -42,9 +42,12 @@ jobs:
           image: ${{ env.NAME }}
           tags: latest
           containerfiles: |
-            fedora-coreos/Containerfile
-          context: fedora-coreos
+            coreos/Containerfile
+          context: coreos
           oci: true
+          build-args: |
+            BASE=${{ env.FCOS_IMG }}
+            LABEL=fedora-coreos
 
       - name: Push to Container Registry
         uses: redhat-actions/push-to-registry@v2
