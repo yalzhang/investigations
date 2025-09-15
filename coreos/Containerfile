@@ -20,7 +20,7 @@ RUN set -xeuo pipefail && \
     mkdir -p /tmp/dracut /var/roothome && \
     dracut $stock_arguments && \
     mv -v /boot/initramfs*.img "/lib/modules/${KERNEL_VERSION}/initramfs.img" && \
-    ostree container commit
+    bootc container lint
 
 ARG COM_COREOS_OSNAME
 LABEL com.coreos.osname=$COM_COREOS_OSNAME
