@@ -5,7 +5,6 @@ FROM quay.io/confidential-clusters/clevis-pin-trustee as clevis
 FROM quay.io/confidential-clusters/ignition:clevis-pin-trustee as ignition
 FROM $BASE
 
-RUN mkdir -p /test
 COPY ./usr /usr
 COPY --from=kbc /usr/local/bin/kbs-client /usr/bin/trustee-attester
 COPY --from=clevis /usr/bin/clevis-pin-trustee /usr/bin/clevis-pin-trustee
