@@ -1,21 +1,18 @@
 variant: fcos
 version: 1.6.0
 
+ignition:
+  config:
+    merge:
+      - source: http://192.168.50.1:8000/pin-trustee.ign
+
 passwd:
   users:
     - name: core
       ssh_authorized_keys:
       - <KEY>
-ignition:
-  config:
-    merge:
-      - source: http://192.168.50.1:8000/pin-trustee.ign
+
 storage:
-  filesystems:
-    - device: /dev/mapper/root
-      format: xfs
-      wipe_filesystem: true
-      label: root
   files:
     - path: /etc/profile.d/systemd-pager.sh
       mode: 0644

@@ -11,3 +11,8 @@ storage:
           pin: trustee
           config: '{"servers":[{"url":"http://192.168.50.1:8080","cert":""}],"path":"conf-cluster/12345/root"}'
       wipe_volume: true
+  filesystems:
+    - device: /dev/mapper/root
+      format: xfs
+      wipe_filesystem: true
+      label: root
