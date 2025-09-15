@@ -1,5 +1,4 @@
 ARG BASE
-ARG LABEL
 FROM quay.io/afrosi_rh/kbs-client-image:latest as kbc
 FROM quay.io/confidential-clusters/clevis-pin-trustee as clevis
 FROM quay.io/confidential-clusters/ignition:clevis-pin-trustee as ignition
@@ -23,4 +22,5 @@ RUN set -xeuo pipefail && \
     mv -v /boot/initramfs*.img "/lib/modules/${KERNEL_VERSION}/initramfs.img" && \
     ostree container commit
 
-LABEL com.coreos.osname=$LABEL
+ARG COM_COREOS_OSNAME
+LABEL com.coreos.osname=$COM_COREOS_OSNAME
