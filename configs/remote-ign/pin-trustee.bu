@@ -9,7 +9,7 @@ storage:
         custom:
           needs_network: true
           pin: trustee
-          config: '{"servers":[{"url":"http://192.168.50.1:8080","cert":""}],"path":"default/machine/root"}'
+          config: '{"servers":[{"url":"http://<IP>:8080","cert":""}],"path":"default/machine/root"}'
       wipe_volume: true
   filesystems:
     - device: /dev/mapper/root

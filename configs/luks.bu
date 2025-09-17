@@ -4,7 +4,7 @@ version: 1.6.0
 ignition:
   config:
     merge:
-      - source: http://192.168.50.1:8000/pin-trustee.ign
+      - source: http://<IP>:8000/pin-trustee.ign
 
 passwd:
   users:
