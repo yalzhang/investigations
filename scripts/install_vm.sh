@@ -9,13 +9,14 @@ PORT="2222"
 OVMF_CODE=${OVMF_CODE:-"/usr/share/edk2/ovmf/OVMF_CODE_4M.secboot.qcow2"}
 OVMF_VARS_TEMPLATE=${OVMF_VARS_TEMPLATE:-"/usr/share/edk2/ovmf/OVMF_VARS_4M.secboot.qcow2"}
 TRUSTEE_PORT=""
+key=""
 
 set -euo pipefail
 # set -x
 
 force=false
 dir=trustee
-while getopts "k:b:n:f p:s:d:t:i:" opt; do
+while getopts "k:b:n:fp:s:d:t:i:" opt; do
   case $opt in
 	k) key=$OPTARG ;;
 	b) butane=$OPTARG ;;
@@ -56,13 +57,24 @@ podman run --interactive --rm --security-opt label=disable \
 	--volume "$(pwd)":/pwd \
 	--volume "${bufile}":/config.bu:z \
 	--workdir /pwd \
-	quay.io/coreos/butane:release \
+	quay.io/confidential-clusters/butane:clevis-pin-trustee \
 	--pretty --strict /config.bu --output "/pwd/${IGNITION_FILE}" \
 	"${butane_args[@]}"
 
 IGNITION_DEVICE_ARG=(--qemu-commandline="-fw_cfg name=opt/com.coreos/config,file=${IGNITION_CONFIG}")
 
 chcon --verbose --type svirt_home_t ${IGNITION_CONFIG}
+
+# Serve remote ignition config
+bufile=pin-trustee.bu
+podman run --interactive --rm --security-opt label=disable \
+	--volume $(pwd)/configs/remote-ign:/pwd \
+	--workdir /pwd \
+	quay.io/confidential-clusters/butane:clevis-pin-trustee \
+	--pretty --strict /pwd/$bufile --output "/pwd/pin-trustee.ign"
+if [ -z "$(lsof -ti :8000)" ]; then
+	cd configs/remote-ign && python3 -m http.server 8000 &
+fi
 
 if [ "$force" = "true" ]; then
 	virsh destroy ${VM_NAME} || true

@@ -1,6 +1,11 @@
 variant: fcos
 version: 1.6.0
 
+ignition:
+  config:
+    merge:
+      - source: http://192.168.50.1:8000/pin-trustee.ign
+
 passwd:
   users:
     - name: core
@@ -8,21 +13,6 @@ passwd:
       - <KEY>
 
 storage:
-  luks:
-    - name: root
-      label: luks-root
-      device: /dev/disk/by-partlabel/root
-      clevis:
-        custom:
-          needs_network: false
-          pin: tpm2
-          config: '{"pcr_bank":"sha256","pcr_ids":"7"}'
-      wipe_volume: true
-  filesystems:
-    - device: /dev/mapper/root
-      format: xfs
-      wipe_filesystem: true
-      label: root
   files:
     - path: /etc/profile.d/systemd-pager.sh
       mode: 0644
