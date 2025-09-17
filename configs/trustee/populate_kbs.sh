@@ -64,7 +64,7 @@ podman exec -ti kbs-client \
 
 # Upload resource
 cat > test_data << EOF
-1234567890abcde
+{ "key_type": "oct", "key": "2b442dd5db4478367729ef8bbf2e7480" }
 EOF
 podman cp test_data kbs-client:/secret
 podman exec -ti kbs-client \
