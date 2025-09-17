@@ -8,6 +8,8 @@ passwd:
 
 systemd:
   units:
+    - name: zincati.service
+      enabled: false
     - name: serial-getty@ttyS0.service
       dropins:
       - name: autologin-core.conf
