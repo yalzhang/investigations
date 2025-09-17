@@ -1,6 +1,9 @@
 #!/bin/bash
 
-set -xe
+set -euo pipefail
+# set -x
+
+URL="--connect=qemu:///system"
 
 while getopts "n:" opt; do
   case $opt in
@@ -10,9 +13,9 @@ while getopts "n:" opt; do
 done
 
 if [ -z "${vm_name}" ]; then
-	echo "Please, specify the VM name"
+	echo "Usage: $0 -n <vm-name>"
 	exit 1
 fi
 
-virsh destroy ${vm_name} || true
-virsh undefine ${vm_name} --nvram --managed-save
+virsh "${URL}" destroy ${vm_name} || true
+virsh "${URL}" undefine ${vm_name} --nvram --managed-save
