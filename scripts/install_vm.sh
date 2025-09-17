@@ -51,7 +51,13 @@ butane_name="$(basename ${butane})"
 IGNITION_FILE="tmp/${butane_name%.bu}.ign"
 IGNITION_CONFIG="$(pwd)/${IGNITION_FILE}"
 bufile="./tmp/${butane_name}"
-sed "s|<KEY>|$key|g" $butane > ${bufile}
+if [[ "$VM_NAME" == "vm" ]]; then
+	IP="$(./scripts/get-ip.sh trustee)"
+	sed "s|<KEY>|$key|g" $butane | sed "s/<IP>/$IP/" > ${bufile}
+else
+	sed "s|<KEY>|$key|g" $butane > ${bufile}
+fi
+
 butane_args=()
 if [[ -d ${butane%.bu} ]]; then
 	butane_args=("--files-dir" "${butane%.bu}")
@@ -67,17 +73,6 @@ podman run --interactive --rm --security-opt label=disable \
 IGNITION_DEVICE_ARG=(--qemu-commandline="-fw_cfg name=opt/com.coreos/config,file=${IGNITION_CONFIG}")
 
 chcon --verbose --type svirt_home_t ${IGNITION_CONFIG}
-
-# Serve remote ignition config
-bufile=pin-trustee.bu
-podman run --interactive --rm --security-opt label=disable \
-	--volume $(pwd)/configs/remote-ign:/pwd \
-	--workdir /pwd \
-	quay.io/confidential-clusters/butane:clevis-pin-trustee \
-	--pretty --strict /pwd/$bufile --output "/pwd/pin-trustee.ign"
-if [ -z "$(lsof -ti :8000)" ]; then
-	cd configs/remote-ign && python3 -m http.server 8000 &
-fi
 
 if [ "$force" = "true" ]; then
 	virsh "${URL}" destroy ${VM_NAME} || true
