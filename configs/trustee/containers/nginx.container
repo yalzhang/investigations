@@ -1,0 +1,14 @@
+[Unit]
+Description=nginx HTTP server emulating registration server
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+ContainerName=nginx
+Image=quay.io/fedora/nginx-126:latest
+PublishPort=8000:8080
+Volume=/srv/www:/opt/app-root/src:z
+Exec=nginx -g "daemon off;"
+
+[Install]
+WantedBy=default.target

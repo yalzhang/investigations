@@ -28,6 +28,8 @@ storage:
     overwrite: true
   - path: /var/as
     overwrite: true
+  - path: /var/srv/www
+    overwrite: true
   files:
     - path: /etc/profile.d/systemd-pager.sh
       mode: 0644
@@ -83,3 +85,7 @@ storage:
       mode: 0644
       contents:
         local: containers/kbc.container
+    - path: /etc/containers/systemd/nginx.container
+      mode: 0644
+      contents:
+        local: containers/nginx.container
