@@ -8,6 +8,8 @@ passwd:
 
 systemd:
   units:
+    - name: zincati.service
+      enabled: false
     - name: serial-getty@ttyS0.service
       dropins:
       - name: autologin-core.conf
@@ -25,6 +27,8 @@ storage:
   - path: /var/rvps
     overwrite: true
   - path: /var/as
+    overwrite: true
+  - path: /var/srv/www
     overwrite: true
   files:
     - path: /etc/profile.d/systemd-pager.sh
@@ -81,3 +85,7 @@ storage:
       mode: 0644
       contents:
         local: containers/kbc.container
+    - path: /etc/containers/systemd/nginx.container
+      mode: 0644
+      contents:
+        local: containers/nginx.container

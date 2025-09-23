@@ -1,11 +1,9 @@
 ARG BASE
-ARG LABEL
 FROM quay.io/afrosi_rh/kbs-client-image:latest as kbc
 FROM quay.io/confidential-clusters/clevis-pin-trustee as clevis
 FROM quay.io/confidential-clusters/ignition:clevis-pin-trustee as ignition
 FROM $BASE
 
-RUN mkdir -p /test
 COPY ./usr /usr
 COPY --from=kbc /usr/local/bin/kbs-client /usr/bin/trustee-attester
 COPY --from=clevis /usr/bin/clevis-pin-trustee /usr/bin/clevis-pin-trustee
@@ -22,6 +20,7 @@ RUN set -xeuo pipefail && \
     mkdir -p /tmp/dracut /var/roothome && \
     dracut $stock_arguments && \
     mv -v /boot/initramfs*.img "/lib/modules/${KERNEL_VERSION}/initramfs.img" && \
-    ostree container commit
+    bootc container lint
 
-LABEL com.coreos.osname=$LABEL
+ARG COM_COREOS_OSNAME
+LABEL com.coreos.osname=$COM_COREOS_OSNAME

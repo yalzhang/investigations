@@ -19,7 +19,7 @@ label := if os == "scos" { scos_label } else { fcos_label }
 archive := os + ".ociarchive"
 
 build:
-    sudo podman build --no-cache --build-arg BASE={{base}} --build-arg LABEL={{label}} -t {{image}} -f Containerfile .
+    sudo podman build --no-cache --build-arg BASE={{base}} --build-arg COM_COREOS_OSNAME={{label}} -t {{image}} -f Containerfile .
 
 oci-archive:
     sudo skopeo copy containers-storage:{{image}} oci-archive:{{archive}}
