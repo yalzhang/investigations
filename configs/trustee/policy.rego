@@ -1,0 +1,24 @@
+package policy
+import rego.v1
+default hardware := 97
+default configuration := 36
+
+##### TPM
+hardware := 2 if {
+  input.tpm.svn in data.reference.tpm_svn
+}
+
+tpm_pcrs_valid if {
+  input.tpm.pcrs[4] in data.reference.tpm_pcr4
+  input.tpm.pcrs[7] in data.reference.tpm_pcr7
+}
+
+executables := 3 if tpm_pcrs_valid
+configuration := 2 if tpm_pcrs_valid
+
+##### Final decision
+allow if {
+  hardware == 2
+  executables == 3
+  configuration == 2
+}

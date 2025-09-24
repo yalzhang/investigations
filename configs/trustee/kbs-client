@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -euo pipefail
+# set -x
+
+KBS="${KBS:-kbs:8080}"
+KEY="${KEY:=/opt/confidential-containers/kbs/user-keys/private.key}"
+
+sudo podman exec -ti \
+  kbs-client \
+    kbs-client \
+      --url "http://${KBS}" \
+      config \
+      --auth-private-key "${KEY}" \
+      "${@}"
