@@ -9,13 +9,13 @@ on:
     branches:
       - main
     paths:
-      - 'configs/trustee/containers/trustee.container'
+      - 'containerfiles/trustee.container'
       - '.github/workflows/build-trustee-image.yml'
   pull_request:
     branches:
       - main
     paths:
-      - 'configs/trustee/containers/trustee.container'
+      - 'containerfiles/trustee.container'
       - '.github/workflows/build-trustee-image.yml'
   workflow_dispatch:
 
@@ -42,8 +42,8 @@ jobs:
           image: ${{ env.NAME }}
           tags: latest
           containerfiles: |
-            configs/trustee/containers/trustee.container
-          context: configs/trustee/containers
+            containerfiles/trustee.container
+          context: containerfiles
           oci: true
 
       - name: Push to Container Registry
