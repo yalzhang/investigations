@@ -7,6 +7,7 @@ RAM_MB="5210"
 DISK_GB="10"
 OVMF_CODE=${OVMF_CODE:-"/usr/share/edk2/ovmf/OVMF_CODE_4M.secboot.qcow2"}
 OVMF_VARS_TEMPLATE=${OVMF_VARS_TEMPLATE:-"/usr/share/edk2/ovmf/OVMF_VARS_4M.secboot.qcow2"}
+OVMF_VARS="${OVMF_VERS:-$PWD/OVMF_VARS_CUSTOM.qcow2}"
 key=""
 
 URL="--connect=qemu:///system"
@@ -79,11 +80,39 @@ if [ "$force" = "true" ]; then
 	virsh "${URL}" undefine ${VM_NAME} --nvram --managed-save || true
 fi
 
+args=()
+
+# Setup custom Secure Boot vars only if the file exists
+if [[ -f ${OVMF_VARS} ]]; then
+	loader="loader=${OVMF_CODE},loader.readonly=yes,loader.type=pflash,loader_secure=yes"
+	nvram="nvram=${OVMF_VARS},nvram.template=${OVMF_VARS_TEMPLATE}"
+	features="firmware.feature0.name=secure-boot,firmware.feature0.enabled=yes,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=yes"
+
+	args+=("--boot")
+	args+=("uefi,${loader},${nvram},${features}")
+
+	args+=("--tpm")
+	args+=("backend.type=emulator,backend.version=2.0,model=tpm-tis")
+
+	# Automatically connect to the console for this case
+	args+=('--autoconsole')
+	args+=('text')
+else
+	args+=("--boot")
+	args+=("uefi,loader=${OVMF_CODE},loader.readonly=yes,loader.type=pflash,nvram.template=${OVMF_VARS_TEMPLATE}")
+
+	args+=("--tpm")
+	args+=("backend.type=emulator,backend.version=2.0,model=tpm-tis")
+
+	args+=('--noautoconsole')
+fi
+
 virt-install "${URL}" \
-	--name="${VM_NAME}" --vcpus="${VCPUS}" --memory="${RAM_MB}" \
-	--os-variant="fedora-coreos-$STREAM" --import --graphics=none \
+	--name="${VM_NAME}" \
+	--vcpus="${VCPUS}" \
+	--memory="${RAM_MB}" \
+	--os-variant="fedora-coreos-$STREAM" \
+	--import \
 	--disk="size=${DISK_GB},backing_store=${image}" \
-	--noautoconsole \
-	--boot uefi,loader=${OVMF_CODE},loader.readonly=yes,loader.type=pflash,nvram.template=${OVMF_VARS_TEMPLATE} \
-	--tpm backend.type=emulator,backend.version=2.0,model=tpm-tis \
-	"${IGNITION_DEVICE_ARG[@]}"
+	"${IGNITION_DEVICE_ARG[@]}" \
+	"${args[@]}"
