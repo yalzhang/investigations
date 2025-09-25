@@ -24,7 +24,9 @@ RAM_MB="${RAM_MB:-2048}"
 
 OVMF_CODE=${OVMF_CODE:-"/usr/share/edk2/ovmf/OVMF_CODE_4M.secboot.qcow2"}
 OVMF_VARS_TEMPLATE=${OVMF_VARS_TEMPLATE:-"/usr/share/edk2/ovmf/OVMF_VARS_4M.secboot.qcow2"}
-OVMF_VARS="${OVMF_VARS:-$PWD/OVMF_VARS_CUSTOM.qcow2}"
+OVMF_VARS_DEFAULT="${OVMF_VARS:-$PWD/OVMF_VARS_CUSTOM.qcow2}"
+
+OVMF_VARS="tmp/OVMF_VARS_${VM_NAME}.qcow2"
 
 STREAM="stable"
 VCPUS="2"
@@ -87,7 +89,9 @@ fi
 args=()
 
 # Setup custom Secure Boot vars only if the file exists
-if [[ -f ${OVMF_VARS} ]]; then
+if [[ -f "${OVMF_VARS_DEFAULT}" ]]; then
+	cp "${OVMF_VARS_DEFAULT}" "${OVMF_VARS}"
+
 	loader="loader=${OVMF_CODE},loader.readonly=yes,loader.type=pflash,loader_secure=yes"
 	nvram="nvram=${OVMF_VARS},nvram.template=${OVMF_VARS_TEMPLATE}"
 	features="firmware.feature0.name=secure-boot,firmware.feature0.enabled=yes,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=yes"
