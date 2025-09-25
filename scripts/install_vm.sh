@@ -1,17 +1,5 @@
 #!/bin/bash
 
-STREAM="stable"
-VM_NAME="fcos-kbs"
-VCPUS="2"
-RAM_MB="5210"
-DISK_GB="10"
-OVMF_CODE=${OVMF_CODE:-"/usr/share/edk2/ovmf/OVMF_CODE_4M.secboot.qcow2"}
-OVMF_VARS_TEMPLATE=${OVMF_VARS_TEMPLATE:-"/usr/share/edk2/ovmf/OVMF_VARS_4M.secboot.qcow2"}
-OVMF_VARS="${OVMF_VERS:-$PWD/OVMF_VARS_CUSTOM.qcow2}"
-key=""
-
-URL="--connect=qemu:///system"
-
 set -euo pipefail
 # set -x
 
@@ -28,8 +16,23 @@ while getopts "k:b:n:fi:m:" opt; do
   esac
 done
 
+key="${key:-}"
+butane="${butane:-}"
+VM_NAME="${VM_NAME:-fcos-kbs}"
+image="${image:-}"
+RAM_MB="${RAM_MB:-2048}"
+
+OVMF_CODE=${OVMF_CODE:-"/usr/share/edk2/ovmf/OVMF_CODE_4M.secboot.qcow2"}
+OVMF_VARS_TEMPLATE=${OVMF_VARS_TEMPLATE:-"/usr/share/edk2/ovmf/OVMF_VARS_4M.secboot.qcow2"}
+OVMF_VARS="${OVMF_VARS:-$PWD/OVMF_VARS_CUSTOM.qcow2}"
+
+STREAM="stable"
+VCPUS="2"
+DISK_GB="20"
+URL="--connect=qemu:///system"
+
 usage() {
-	echo "Usage: $0 -z <path-ssh-pubkey> -b <path-to-butane-config> -z <path-to-qcow2-image>"
+	echo "Usage: $0 -k <path-ssh-pubkey> -b <path-to-butane-config> -i <path-to-qcow2-image>"
 }
 
 if [ -z "${key}" ]; then
