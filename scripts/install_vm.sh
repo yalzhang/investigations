@@ -16,13 +16,14 @@ set -euo pipefail
 # set -x
 
 force=false
-while getopts "k:b:n:fi:" opt; do
+while getopts "k:b:n:fi:m:" opt; do
   case $opt in
 	k) key=$OPTARG ;;
 	b) butane=$OPTARG ;;
 	f) force=true ;;
 	n) VM_NAME=$OPTARG ;;
 	i) image=$OPTARG ;;
+	m) RAM_MB=$OPTARG ;;
 	\?) echo "Invalid option"; exit 1 ;;
   esac
 done
