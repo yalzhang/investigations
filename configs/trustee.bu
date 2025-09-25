@@ -21,15 +21,12 @@ systemd:
           ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM
 
 storage:
+  trees:
+    - local: "."
+      path: "/"
   directories:
-  - path: /var/kbs/config
-    overwrite: true
-  - path: /var/rvps
-    overwrite: true
-  - path: /var/as
-    overwrite: true
-  - path: /var/srv/www
-    overwrite: true
+    - path: /var/srv/www
+      overwrite: true
   files:
     - path: /etc/profile.d/systemd-pager.sh
       mode: 0644
@@ -37,55 +34,3 @@ storage:
         inline: |
           # Tell systemd to not use a pager when printing information
           export SYSTEMD_PAGER=cat
-    - path: /usr/local/bin/populate_kbs.sh
-      mode: 0755
-      contents:
-        local: populate_kbs.sh
-    - path: /etc/containers/systemd/key-generation.container
-      mode: 0644
-      contents:
-        local: containers/key-generation.container
-    - path: /var/kbs/config/kbs-config.toml
-      mode: 0644
-      contents:
-        local: config/kbs-config.toml
-    - path: /etc/containers/systemd/kbs.container
-      mode: 0644
-      contents:
-        local: containers/kbs.container
-    - path: /etc/containers/systemd/rvps.container
-      mode: 0644
-      contents:
-        local: containers/rvps.container
-    - path: /var/rvps/rvps.json
-      mode: 0644
-      contents:
-        local: config/rvps.json
-    - path: /etc/containers/systemd/as-grpc.container
-      mode: 0644
-      contents:
-        local: containers/as-grpc.container
-    - path: /var/as/as-config.json
-      mode: 0644
-      contents:
-        local: config/as-config.json
-    - path: /var/as/sgx_default_qcnl.conf
-      mode: 0644
-      contents:
-        local: config/sgx_default_qcnl.conf
-    - path: /etc/containers/systemd/keyprovider.container
-      mode: 0644
-      contents:
-        local: containers/keyprovider.container
-    - path: /etc/containers/systemd/trustee.network
-      mode: 0644
-      contents:
-        local: containers/trustee.network
-    - path: /etc/containers/systemd/kbs-client.container
-      mode: 0644
-      contents:
-        local: containers/kbc.container
-    - path: /etc/containers/systemd/nginx.container
-      mode: 0644
-      contents:
-        local: containers/nginx.container

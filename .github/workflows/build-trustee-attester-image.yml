@@ -9,13 +9,13 @@ on:
     branches:
       - main
     paths:
-      - 'configs/trustee/containers/trustee-attester.container'
+      - 'containerfiles/trustee-attester.container'
       - '.github/workflows/build-trustee-attester-image.yml'
   pull_request:
     branches:
       - main
     paths:
-      - 'configs/trustee/containers/trustee-attester.container'
+      - 'containerfiles/trustee-attester.container'
       - '.github/workflows/build-trustee-attester-image.yml'
   workflow_dispatch:
 
@@ -42,8 +42,8 @@ jobs:
           image: ${{ env.NAME }}
           tags: latest
           containerfiles: |
-            configs/trustee/containers/trustee-attester.container
-          context: configs/trustee/containers
+            containerfiles/trustee-attester.container
+          context: containerfiles
           oci: true
 
       - name: Push to Container Registry
