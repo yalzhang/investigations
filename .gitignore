@@ -3,3 +3,4 @@ coreos.key*
 fcos-cvm.tar*
 *.ign
 *.ociarchive
+tmp/
