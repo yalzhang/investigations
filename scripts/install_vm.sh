@@ -54,6 +54,10 @@ bufile="./tmp/${butane_name}"
 if [[ "$VM_NAME" == "vm" ]]; then
 	IP="$(./scripts/get-ip.sh trustee)"
 	sed "s|<KEY>|$key|g" $butane | sed "s/<IP>/$IP/" > ${bufile}
+elif [[ "$VM_NAME" == "existing-trustee" ]]; then
+	sed "s|<KEY>|key|g;
+	     s|<IP>|$(ip route | grep virbr0 | cut -d' ' -f9)|g;
+	     s|pin-trustee.ign|ignition-clevis-pin-trustee|g" "$butane" > "$bufile"
 else
 	sed "s|<KEY>|$key|g" $butane > ${bufile}
 fi

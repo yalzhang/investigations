@@ -48,10 +48,19 @@ scripts/create-vms.sh coreos.key.pub
 
 ### Example with the Confidential Clusters operator and a local VM
 
-If you have deployed Confidential Clusters with Trustee, and its KBS is available at port `8080`, and the VM PCR values are configured with Trustee, you can instead run
+If you have deployed Confidential Clusters with Trustee, and its KBS and register server are available at ports `8080` and `8000`, and the VM PCR values are configured with Trustee, you can instead run
 
 ```bash
-EXISTING_TRUSTEE=yes scripts/create-vms.sh coreos.key.pub
+scripts/create-existing-trustee.sh coreos.key.pub
 ```
 
-to skip the creation of the former VM.
+to only create the test VM, not the Trustee VM.
+This assumes that libvirt's bridge to connect to your host is `virbr0`.
+This bridge may not exist on your system yet, in which case you can simply run the script again.
+If you are using `firewalld`, this may require allowing the respective ports:
+
+```bash
+firewall-cmd --zone=libvirt --add-port=8080/tcp --permanent
+firewall-cmd --zone=libvirt --add-port=8000/tcp --permanent
+firewall-cmd --reload
+```
