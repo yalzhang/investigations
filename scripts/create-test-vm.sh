@@ -16,4 +16,5 @@ scripts/install_vm.sh \
 	-b configs/luks.bu \
 	-k "$(cat "$KEY")" \
 	-f \
-	-i "${CUSTOM_IMAGE}"
+	-i "${CUSTOM_IMAGE}" \
+	-m 4096
