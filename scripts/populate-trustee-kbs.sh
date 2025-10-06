@@ -9,11 +9,10 @@ if [[ "${#}" -ne 1 ]]; then
 fi
 
 KEY=$1
-IP="$(./scripts/get-ip.sh trustee)"
 TRUSTEE_PORT=8080
 
 # Setup reference values, policies and secrets
-until curl "http://${IP}:${TRUSTEE_PORT}"; do
+until IP="$(./scripts/get-ip.sh trustee)" && [ -n "$IP" ] && curl "http://${IP}:${TRUSTEE_PORT}" >/dev/null 2>&1; do
 	echo "Waiting for KBS to be available..."
 	sleep 1
 done
