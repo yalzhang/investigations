@@ -9,7 +9,7 @@ if [[ "${#}" -ne 1 ]]; then
 fi
 
 KEY=$1
-STABLE_IMAGE="$(pwd)/fedora-coreos-42.20250705.3.0-qemu.x86_64.qcow2"
+STABLE_IMAGE="/var/lib/libvirt/images/fedora-coreos-42.20250705.3.0-qemu.x86_64.qcow2"
 
 if [[ ! -f "${STABLE_IMAGE}" ]]; then
     # Download a fixed stable image that matches the one used for the container build with trustee

@@ -9,7 +9,7 @@ if [[ "${#}" -ne 1 ]]; then
 fi
 
 KEY=$1
-CUSTOM_IMAGE="$(pwd)/fcos-cvm-qemu.x86_64.qcow2"
+CUSTOM_IMAGE="/var/lib/libvirt/images/fcos-qemu.x86_64.qcow2"
 
 scripts/install_vm.sh \
 	-n vm \

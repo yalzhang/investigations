@@ -56,7 +56,7 @@ fi
 mkdir -p tmp
 butane_name="$(basename ${butane})"
 IGNITION_FILE="tmp/${butane_name%.bu}.ign"
-IGNITION_CONFIG="$(pwd)/${IGNITION_FILE}"
+IGNITION_CONFIG="/var/lib/libvirt/images/${IGNITION_FILE}"
 bufile="./tmp/${butane_name}"
 if [[ "$VM_NAME" == "vm" ]]; then
 	IP="$(./scripts/get-ip.sh trustee)"
@@ -80,6 +80,9 @@ podman run --interactive --rm --security-opt label=disable \
 	quay.io/confidential-clusters/butane:clevis-pin-trustee \
 	--pretty --strict /config.bu --output "/pwd/${IGNITION_FILE}" \
 	"${butane_args[@]}"
+
+mkdir -p "$(dirname "${IGNITION_CONFIG}")"
+mv "${IGNITION_FILE}" "${IGNITION_CONFIG}"
 
 IGNITION_DEVICE_ARG=(--qemu-commandline="-fw_cfg name=opt/com.coreos/config,file=${IGNITION_CONFIG}")
 
