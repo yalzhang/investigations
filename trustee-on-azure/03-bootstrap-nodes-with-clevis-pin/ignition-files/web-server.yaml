@@ -1,0 +1,56 @@
+$ cat web-server.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-server
+  namespace: trustee-operator-system
+  labels:
+    app: web-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-server
+  template:
+    metadata:
+      labels:
+        app: web-server
+    spec:
+      containers:
+      - name: httpd
+        image: registry.access.redhat.com/ubi8/httpd-24
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: web-content
+          mountPath: /var/www/html
+      volumes:
+      - name: web-content
+        configMap:
+          name: http-ignition-config  # It mounts configmap http-ignition-config to include the ignition files
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-server
+  namespace: trustee-operator-system
+spec:
+  selector:
+    app: web-server
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: web-server
+  namespace: trustee-operator-system
+spec:
+  to:
+    kind: Service
+    name: web-server
+  port:
+    targetPort: 8080

@@ -1,0 +1,40 @@
+# refer to configs/luks.bu
+variant: fcos
+version: 1.6.0
+
+ignition:
+  config:
+    merge:
+    # Add the url of the igniton file by which you can get the file, for example:
+    # - source: http://web-server-trustee-operator-system.apps.dev-normal-shared.cc.azure.dog8.cloud/pin-trustee.ign
+      - source: http://<WEB_SERVER_URL>/pin-trustee.ign
+      - source: http://<WEB_SERVER_URL>/worker.ign
+
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+      - <trustee_clinet_KEY>
+
+storage:
+  files:
+    - path: /etc/profile.d/systemd-pager.sh
+      mode: 0644
+      contents:
+        inline: |
+          # Tell systemd to not use a pager when printing information
+          export SYSTEMD_PAGER=cat
+
+systemd:
+  units:
+    - name: zincati.service
+      enabled: false
+    - name: serial-getty@ttyS0.service
+      dropins:
+      - name: autologin-core.conf
+        contents: |
+          [Service]
+          # Override Execstart in main unit
+          ExecStart=
+          # Add new Execstart with `-` prefix to ignore failure`
+          ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM

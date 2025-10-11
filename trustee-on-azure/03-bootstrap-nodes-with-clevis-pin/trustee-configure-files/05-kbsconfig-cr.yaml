@@ -1,0 +1,15 @@
+apiVersion: confidentialcontainers.org/v1alpha1
+kind: KbsConfig
+metadata:
+  name: kbsconfig-sample
+  namespace: trustee-operator-system
+spec:
+  kbsConfigMapName: kbs-config
+  kbsAuthSecretName: kbs-auth-public-key
+  kbsDeploymentType: MicroservicesDeployment
+  kbsAttestationPolicyConfigMapName: attestation-policy
+  kbsResourcePolicyConfigMapName: resource-policy
+  kbsRvpsRefValuesConfigMapName: rvps-reference-values
+  kbsAsConfigMapName: as-config
+  kbsRvpsConfigMapName: rvps-config-grpc
+  kbsServiceType: LoadBalancer
