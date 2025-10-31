@@ -1,0 +1,119 @@
+apiVersion: v1
+items:
+- apiVersion: cluster.x-k8s.io/v1beta1
+  kind: MachineSet
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"cluster.x-k8s.io/v1beta1","kind":"MachineSet","metadata":{"annotations":{},"name":"capi-ms-fcos-clevis","namespace":"openshift-cluster-api"},"spec":{"clusterName":"aa-421-shared-capz-2fxvd","replicas":1,"selector":{"matchLabels":{"test":"example"}},"template":{"metadata":{"labels":{"test":"example"}},"spec":{"bootstrap":{"dataSecretName":"luks-ign"},"clusterName":"aa-421-shared-capz-2fxvd","infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1beta1","kind":"AzureMachineTemplate","name":"capi-machine-fcos-clevis"}}}}}
+    creationTimestamp: "2025-10-13T12:52:02Z"
+    finalizers:
+    - cluster.x-k8s.io/machineset
+    generation: 16
+    labels:
+      cluster.x-k8s.io/cluster-name: aa-421-shared-capz-2fxvd
+    name: capi-ms-fcos-clevis
+    namespace: openshift-cluster-api
+    ownerReferences:
+    - apiVersion: cluster.x-k8s.io/v1beta1
+      kind: Cluster
+      name: aa-421-shared-capz-2fxvd
+      uid: 9e811cb4-484a-491b-b1d3-dfb4ec4ce204
+    resourceVersion: "920368"
+    uid: 5c593bf1-05b8-4282-b2fc-03770308649b
+  spec:
+    clusterName: aa-421-shared-capz-2fxvd
+    deletePolicy: Random
+    replicas: 0
+    selector:
+      matchLabels:
+        cluster.x-k8s.io/cluster-name: aa-421-shared-capz-2fxvd
+        test: example
+    template:
+      metadata:
+        labels:
+          cluster.x-k8s.io/cluster-name: aa-421-shared-capz-2fxvd
+          test: example
+      spec:
+        bootstrap:
+          dataSecretName: demo-ignition
+        clusterName: aa-421-shared-capz-2fxvd
+        infrastructureRef:
+          apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+          kind: AzureMachineTemplate
+          name: capi-machine-fcos-clevis
+          namespace: openshift-cluster-api
+  status:
+    conditions:
+    - lastTransitionTime: "2025-11-03T11:40:49Z"
+      message: 0 of 1 completed
+      reason: Deleted @ Machine/capi-ms-fcos-clevis-qdmwz
+      severity: Info
+      status: "False"
+      type: Ready
+    - lastTransitionTime: "2025-10-13T12:52:02Z"
+      status: "True"
+      type: MachinesCreated
+    - lastTransitionTime: "2025-11-03T11:40:48Z"
+      message: 0 of 1 completed
+      reason: Deleted @ Machine/capi-ms-fcos-clevis-qdmwz
+      severity: Info
+      status: "False"
+      type: MachinesReady
+    - lastTransitionTime: "2025-11-03T11:40:49Z"
+      status: "True"
+      type: Resized
+    fullyLabeledReplicas: 0
+    observedGeneration: 16
+    replicas: 0
+    selector: cluster.x-k8s.io/cluster-name=aa-421-shared-capz-2fxvd,test=example
+    v1beta2:
+      availableReplicas: 0
+      conditions:
+      - lastTransitionTime: "2025-10-13T12:52:02Z"
+        message: ""
+        observedGeneration: 16
+        reason: NotRemediating
+        status: "False"
+        type: Remediating
+      - lastTransitionTime: "2025-11-03T11:40:49Z"
+        message: ""
+        observedGeneration: 16
+        reason: NotScalingDown
+        status: "False"
+        type: ScalingDown
+      - lastTransitionTime: "2025-11-03T09:32:46Z"
+        message: ""
+        observedGeneration: 16
+        reason: NotScalingUp
+        status: "False"
+        type: ScalingUp
+      - lastTransitionTime: "2025-11-03T11:40:49Z"
+        message: ""
+        observedGeneration: 16
+        reason: NoReplicas
+        status: "True"
+        type: MachinesReady
+      - lastTransitionTime: "2025-11-03T11:40:49Z"
+        message: ""
+        observedGeneration: 16
+        reason: NoReplicas
+        status: "True"
+        type: MachinesUpToDate
+      - lastTransitionTime: "2025-10-13T12:52:02Z"
+        message: ""
+        observedGeneration: 16
+        reason: NotPaused
+        status: "False"
+        type: Paused
+      - lastTransitionTime: "2025-10-13T12:52:02Z"
+        message: ""
+        observedGeneration: 16
+        reason: NotDeleting
+        status: "False"
+        type: Deleting
+      readyReplicas: 0
+      upToDateReplicas: 0
+kind: List
+metadata:
+  resourceVersion: ""

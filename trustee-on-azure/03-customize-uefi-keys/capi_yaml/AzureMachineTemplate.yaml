@@ -1,0 +1,53 @@
+apiVersion: v1
+items:
+- apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+  kind: AzureMachineTemplate
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"infrastructure.cluster.x-k8s.io/v1beta1","kind":"AzureMachineTemplate","metadata":{"annotations":{},"creationTimestamp":"2025-10-13T12:51:53Z","generation":1,"name":"capi-machine-fcos-clevis","namespace":"openshift-cluster-api","ownerReferences":[{"apiVersion":"cluster.x-k8s.io/v1beta1","kind":"Cluster","name":"aa-421-shared-capz-2fxvd","uid":"9e811cb4-484a-491b-b1d3-dfb4ec4ce204"}],"resourceVersion":"203850","uid":"78002a37-c8e8-4469-adb3-cc72b18f27a3"},"spec":{"template":{"metadata":{},"spec":{"diagnostics":{"boot":{"storageAccountType":"UserManaged","userManaged":{"storageAccountURI":"https://yalanstroageaccount.blob.core.windows.net/"}}},"identity":"None","image":{"id":"/subscriptions/1b34f80b-b456-49c3-8aa1-5dddeb9b4ab5/resourceGroups/yalan-rg-20250930/providers/Microsoft.Compute/galleries/yalan_Gallery/images/yalan-fcos-clevis-v2/versions/5.0.2"},"networkInterfaces":[{"acceleratedNetworking":false,"privateIPConfigs":1,"subnetName":"aa-421-shared-capz-2fxvd-worker-subnet"}],"osDisk":{"cachingType":"None","diskSizeGB":128,"managedDisk":{"securityProfile":{"securityEncryptionType":"VMGuestStateOnly"},"storageAccountType":"Premium_LRS"},"osType":"Linux"},"securityProfile":{"securityType":"ConfidentialVM","uefiSettings":{"secureBootEnabled":true,"vTpmEnabled":true}},"sshPublicKey":"c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUlzeUdTcGFVeFVndzBLWG5tZTZIWWc1UkxoNnlNNTRYMDUvQkFidzhwMlogeWFsemhhbmdAbGFwdG9wCg==","vmSize":"Standard_DC4ads_v5"}}}}
+    creationTimestamp: "2025-11-03T08:25:47Z"
+    generation: 1
+    name: capi-machine-fcos-clevis
+    namespace: openshift-cluster-api
+    ownerReferences:
+    - apiVersion: cluster.x-k8s.io/v1beta1
+      kind: Cluster
+      name: aa-421-shared-capz-2fxvd
+      uid: 9e811cb4-484a-491b-b1d3-dfb4ec4ce204
+    resourceVersion: "872882"
+    uid: 91eea42e-013b-4846-9afd-5d96084c6fb8
+  spec:
+    template:
+      metadata: {}
+      spec:
+        diagnostics:
+          boot:
+            storageAccountType: UserManaged
+            userManaged:
+              storageAccountURI: https://yalanstroageaccount.blob.core.windows.net/
+        identity: None
+        image:
+          id: /subscriptions/1b34f80b-b456-49c3-8aa1-5dddeb9b4ab5/resourceGroups/yalan-rg-20250930/providers/Microsoft.Compute/galleries/yalan_Gallery/images/yalan-fcos-clevis-v2/versions/5.0.2
+        networkInterfaces:
+        - acceleratedNetworking: false
+          privateIPConfigs: 1
+          subnetName: aa-421-shared-capz-2fxvd-worker-subnet
+        osDisk:
+          cachingType: None
+          diskSizeGB: 128
+          managedDisk:
+            securityProfile:
+              securityEncryptionType: VMGuestStateOnly
+            storageAccountType: Premium_LRS
+          osType: Linux
+        securityProfile:
+          securityType: ConfidentialVM
+          uefiSettings:
+            secureBootEnabled: true
+            vTpmEnabled: true
+        sshPublicKey: c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUlzeUdTcGFVeFVndzBLWG5tZTZIWWc1UkxoNnlNNTRYMDUvQkFidzhwMlogeWFsemhhbmdAbGFwdG9wCg==
+        vmSize: Standard_DC4ads_v5
+kind: List
+metadata:
+  resourceVersion: ""

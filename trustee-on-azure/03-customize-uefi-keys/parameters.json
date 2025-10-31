@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "galleryName": { "value": "yalan_Gallery" },
+    "imageDefinitionName": { "value": "yalan-fcos-clevis-v2" },
+    "versionName": { "value": "5.0.2" },
+    "location": { "value": "eastus" },
+    "defaultReplicaCount": { "value": 1 },
+    "regionReplications": {
+      "value": [
+        {
+          "name": "East US",
+          "regionalReplicaCount": 1,
+          "storageAccountType": "Standard_LRS"
+        }
+      ]
+    },
+    "excludedFromLatest": { "value": false },
+    "sourceVhdStorageAccountId": { "value": "/subscriptions/1b34f80b-b456-49c3-8aa1-5dddeb9b4ab5/resourceGroups/yalanstorage/providers/Microsoft.Storage/storageAccounts/yalanstroageaccount" },
+    "sourceVhdUri": { "value": "https://yalanstroageaccount.blob.core.windows.net/vhd/fcos-azure.x86_64.vhd" },
+    "allowDeletionOfReplicatedLocations": { "value": false }
+  }
+}
