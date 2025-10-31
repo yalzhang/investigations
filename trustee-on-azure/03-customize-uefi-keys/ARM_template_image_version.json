@@ -1,0 +1,27 @@
+{
+    "apiVersion": "2022-03-03",
+    "type": "Microsoft.Compute/galleries/images/versions",
+    "dependsOn": [
+        "[concat('Microsoft.Compute/galleries/', parameters('galleryName'), '/images/', parameters('imageDefinitionName'))]"
+    ],
+    "name": "[concat(parameters('galleryName'), '/', parameters('imageDefinitionName'), '/', parameters('versionName'))]",
+    "location": "[parameters('location')]",
+    "properties": {
+        "publishingProfile": {
+            "replicaCount": "[parameters('defaultReplicaCount')]",
+            "targetRegions": "[parameters('regionReplications')]",
+            "excludeFromLatest": "[parameters('excludedFromLatest')]",
+            "replicationMode": "[parameters('replicationMode')]"
+        },
+        "storageProfile": {
+            "source": {
+                "id": "[parameters('sourceVmId')]"
+            }
+        },
+        "safetyProfile": {
+            "allowDeletionOfReplicatedLocations": "[parameters('allowDeletionOfReplicatedLocations')]"
+        },
+        "securityProfile": {}
+    },
+    "tags": {}
+}
